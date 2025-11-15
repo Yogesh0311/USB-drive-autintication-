@@ -191,12 +191,13 @@ __pycache__/
 ⚠️ Never push your real USB Serial to GitHub!
 
 📊 Useful Commands
-Command	Purpose
-wmic diskdrive get serialnumber	Get USB serial
-python USB.py	Run script
-shutdown -l	Log off user
-taskschd.msc	Open Task Scheduler
-git status	Check changes
-git add .	Stage all changes
-git commit -m "message"	Commit changes
-git push origin main	Push to GitHub
+| Command                           | Purpose             |
+| --------------------------------- | ------------------- |
+| `wmic diskdrive get serialnumber` | Get USB serial      |
+| `python USB.py`                   | Run script          |
+| `shutdown -l`                     | Log off user        |
+| `taskschd.msc`                    | Open Task Scheduler |
+| `git status`                      | Check changes       |
+| `git add .`                       | Stage all changes   |
+| `git commit -m "message"`         | Commit changes      |
+| `git push origin main`            | Push to GitHub      |
