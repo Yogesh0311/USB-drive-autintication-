@@ -1,63 +1,64 @@
 🔐 USB DRIVE AUTHENTICATION SYSTEM
-Your USB Pen-Drive Becomes a Physical Security Key 🔑💻🛡️
+Turn Your USB Pen-Drive Into a Physical Security Key 🔑💻🛡️
 🌟 What Is This?
 
-This project turns your USB flash drive into a hardware-level login key.
+A Python-based security tool that uses your USB drive’s unique serial number as a hardware authentication key.
 
-When your USB is connected → your system stays unlocked
+USB inserted → System stays unlocked
 
-Remove it → ⚠️ Instant Windows Logoff
+USB removed → ⚠️ Instant Windows Logoff
 
-It’s like a digital car key → pull it out, engine stops. 🚗💨
-Same for your PC.
+Exactly like a car key → pull it out, engine shuts off. 🚗💨
 
 💡 Why Use It?
 
-✔️ Prevent unauthorized system access
-✔️ Perfect for shared/home/office PCs
-✔️ Lightweight and fast
-✔️ Zero third-party tools
-✔️ No GUI needed
-✔️ Runs silently in background
+✔ Prevent unauthorized access
+✔ Protect sensitive work
+✔ Works on any Windows system
+✔ Runs silently in background
+✔ No external tools needed
+✔ Lightweight & fast
 
-Passwords can leak.
-Your USB hardware signature cannot.
+Your password can leak.
+Your USB’s hardware serial cannot.
 
-⚙️ How It Works (Super Simple)
-🔌 Step 1 — Unique USB Serial
+⚙️ How It Works
+🔌 1. Find USB Serial
 
-Every USB has a unique serial number (fetched using WMIC).
+WMIC command extracts the USB’s unique ID.
 
-🧠 Step 2 — Python Script Monitors Serial
+🧠 2. Script Checks Continuously
 
-If serial matches → ✔️ continue
+Every 10 seconds the script checks:
 
-If not → ❌ logoff instantly
+If serial matches → Normal operation
 
-⚡ Step 3 — Auto Protection
+If serial missing → Logoff
 
-No human interaction needed.
+⚡ 3. Auto Security
 
-🧠 Core Concepts (Visual Summary)
+Lock happens automatically.
+
+🧠 Core Concepts
 Icon	Feature	Description
 🔌	USB Serial	Unique ID used for authentication
-🧠	Python Script	Core logic running continuously
-📝	WMIC Tool	Reads USB info from Windows
-⚡	Auto Logoff	Logs user out if key is missing
-🗂️	Temp File	Stores WMIC output briefly
-🔁	Monitoring Loop	Repeats every 10 seconds
+🧠	Python Script	Runs the monitoring logic
+📝	WMIC	Command to read USB info
+⚡	Auto Logoff	Logs user out if key missing
+🗂	Temp File	Stores WMIC output
+🔁	Loop	Repeats every few seconds
 📁 Project Structure
-usb-auth/
-├── usb_auth.py        # Main authentication script
-├── README.md          # Documentation
-└── .gitignore         # Prevents sensitive files from being pushed
+USB-drive-authentication/
+├── USB.py              # Main authentication script
+├── README.md           # Documentation
+└── .gitignore          # Ignore sensitive files
 
-📄 Full Script (Optimized & Clean)
+📄 Full Script (USB.py)
 import os
 import time
 
 # Set your authorized USB serial number
-TARGET_SERIAL = "037D13C130C0"
+TARGET_SERIAL = "YOUR_SERIAL_HERE"
 
 while True:
     time.sleep(10)
@@ -78,32 +79,34 @@ while True:
 
 🔍 How to Get Your USB Serial Number
 
-Run this in CMD:
+Run this in Windows CMD:
 
 wmic diskdrive get serialnumber
 
-Example Output:
+
+Example:
+
 SerialNumber
 037D13C130C0
-WD-WX52A9988123
+59A8F9031234
 
 
-Then set:
+Then put this serial here:
 
-TARGET_SERIAL = "YOUR_SERIAL_HERE"
+TARGET_SERIAL = "037D13C130C0"
 
-🚀 Auto-Start on Windows (Auto Protection)
-✔️ Method 1 — Task Scheduler (Recommended)
+🚀 Auto-Run on Windows Startup
+✔ Task Scheduler (Recommended)
 
-Runs script at system login
+Run script at login
 
 Hidden from normal users
 
-Works even after reboot
+Harder to bypass
 
-✔️ Method 2 — Startup Folder (Quick)
+✔ Startup Folder (Simple)
 
-Paste a shortcut in:
+Paste shortcut here:
 
 %APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup
 
@@ -111,30 +114,15 @@ Paste a shortcut in:
 usblist.txt
 *.log
 __pycache__/
-*.exe
 *.pyc
+*.exe
 
 
-Never upload your USB serial publicly.
+Never upload real USB serial numbers publicly.
 
 📊 Useful Commands
-Command	Purpose
-wmic diskdrive get serialnumber	Fetch USB serial
-python usb_auth.py	Start script
+Command	Use
+wmic diskdrive get serialnumber	Get USB serial
+python USB.py	Run script
 shutdown -l	Log off user
 taskschd.msc	Open Task Scheduler
-🧠 Pro Security Tips
-
-🔥 Convert script into .exe with PyInstaller
-🔥 Hide task in Task Scheduler
-🔥 Add multiple serials for multi-user authentication
-🔥 Add pop-ups before logoff (optional enhancement)
-🔥 Combine with disk encryption for maximum protection
-
-🌍 Push to GitHub
-git init
-git add .
-git commit -m "USB Authentication System"
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
-git push -u origin main
