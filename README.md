@@ -1,20 +1,14 @@
 🔐 USB DRIVE AUTHENTICATION SYSTEM
 Your USB Pen-Drive Becomes a Physical Security Key 🔑💻🛡️
-
-
-
-
-
-
-
-
 🌟 What Is This?
 
 This project turns your USB flash drive into a hardware-level login key.
-When your USB is connected, your system stays unlocked.
-Remove it → Instant Windows Logoff ⚠️
 
-Think of it like a digital car key → pull it out, engine stops. 🚗💨
+When your USB is connected → your system stays unlocked
+
+Remove it → ⚠️ Instant Windows Logoff
+
+It’s like a digital car key → pull it out, engine stops. 🚗💨
 Same for your PC.
 
 💡 Why Use It?
@@ -30,16 +24,17 @@ Passwords can leak.
 Your USB hardware signature cannot.
 
 ⚙️ How It Works (Super Simple)
-🔌 Step 1: Every USB Has a Unique Serial Number
+🔌 Step 1 — Unique USB Serial
 
-Fetched using a WMIC command.
+Every USB has a unique serial number (fetched using WMIC).
 
-🧠 Step 2: Python Script Checks Every Few Seconds
+🧠 Step 2 — Python Script Monitors Serial
 
-If the serial matches → ✔️ continue
+If serial matches → ✔️ continue
+
 If not → ❌ logoff instantly
 
-⚡ Step 3: System is secured automatically
+⚡ Step 3 — Auto Protection
 
 No human interaction needed.
 
@@ -54,7 +49,7 @@ Icon	Feature	Description
 📁 Project Structure
 usb-auth/
 ├── usb_auth.py        # Main authentication script
-├── README.md          # Documentation (this file)
+├── README.md          # Documentation
 └── .gitignore         # Prevents sensitive files from being pushed
 
 📄 Full Script (Optimized & Clean)
@@ -87,19 +82,17 @@ Run this in CMD:
 
 wmic diskdrive get serialnumber
 
-
 Example Output:
-
 SerialNumber
 037D13C130C0
 WD-WX52A9988123
 
 
-Use your serial in:
+Then set:
 
 TARGET_SERIAL = "YOUR_SERIAL_HERE"
 
-🚀 Run on Windows Startup (Auto Protection)
+🚀 Auto-Start on Windows (Auto Protection)
 ✔️ Method 1 — Task Scheduler (Recommended)
 
 Runs script at system login
@@ -133,10 +126,10 @@ taskschd.msc	Open Task Scheduler
 🧠 Pro Security Tips
 
 🔥 Convert script into .exe with PyInstaller
-🔥 Hide task in Task Scheduler for stealth protection
-🔥 Use multiple serials for multi-user authentication
+🔥 Hide task in Task Scheduler
+🔥 Add multiple serials for multi-user authentication
 🔥 Add pop-ups before logoff (optional enhancement)
-🔥 Combine with system encryption for maximum security
+🔥 Combine with disk encryption for maximum protection
 
 🌍 Push to GitHub
 git init
