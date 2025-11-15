@@ -1,168 +1,130 @@
-USB Drive Authentication System
+🔐 USB Drive Authentication Guide
 
-A lightweight security system that locks/logs off a Windows PC if a specific USB drive (based on serial number) is removed.
-The USB drive acts as a physical authentication token — a “key” — and without it, the system forces logoff.
+Your physical security key for Windows 💻🔑
 
-This project uses:
+🌱 What Is This?
 
-Python
+A lightweight Python + Windows script that uses a USB drive as a physical authentication token.
 
-WMIC (Windows Management Instrumentation Command-line)
+If the correct USB is not connected →
+💥 Your Windows session logs off instantly.
 
-Windows logoff command
+Think of it like a security key — the system stays open only as long as your USB is inserted.
 
-Works on Windows 10/11.
-Designed to be simple, minimal, and effective.
+🔧 How It Works
 
-🔐 How It Works
+Every USB drive has a unique serial number.
 
-Every USB drive has a unique Serial Number.
+Script checks every few seconds if that serial exists.
 
-The script continuously checks if the authorized USB (with that serial) is connected.
-
-If the serial is not detected, the system immediately executes:
+If not found →
 
 shutdown -l
 
 
-→ Logging off the active Windows user.
+→ system logs off.
 
-🧠 Features
+🧠 Core Concepts (Visual Summary)
+🌟 Feature	🔍 Description
+🔌 USB Serial	Unique ID used as authentication
+📝 WMIC	Reads USB serial numbers from Windows
+🧠 Python Script	Monitors and compares serials
+⚡ Auto Logoff	Logs out when unauthorized USB is detected
+📂 Temp File	Used to store WMIC output briefly
+🔁 Loop	Checks USB every X seconds
+🛠️ Project Structure
+usb-auth/
+├── usb_auth.py        # Main authentication script
+├── README.md          # This guide
+└── .gitignore         # Ignore temp + sensitive files
 
-Hardware-based authentication (cannot be bypassed with passwords)
-
-Lightweight Python script
-
-No external libraries
-
-Continuous background monitoring
-
-Auto logoff on unauthorized usage
-
-No installation required
-
-🗂️ Project Structure
-│
-├── usb_auth.py          # Main Python script
-├── README.md            # Documentation
-└── (temporary) usblist.txt    # Auto-created & deleted during runtime
-
-⚙️ Requirements
-Hardware
-
-Any USB Flash Drive (used as the “key”)
-
-Windows PC (Win10/Win11)
-
-Software
-
-Python 3.6+
-
-WMIC (pre-installed in Windows)
-
-Administrator privileges (required for logoff)
-
-🛠️ Setup Instructions
-1. Get Your USB Serial Number
-
-Open Command Prompt and run:
-
-wmic diskdrive get serialnumber
-
-
-Note down the serial of the USB you want to authorize.
-
-2. Set Your Serial in the Script
-
-Open usb_auth.py and update:
-
-TARGET_SERIAL = "PUT-YOUR-USB-SERIAL-HERE"
-
-
-Example:
-
-TARGET_SERIAL = "037D13C130C0"
-
-3. Run the Script
-
-Open Command Prompt (Run as Administrator):
-
-python usb_auth.py
-
-
-The script will now check every 10 seconds for your USB.
-If the USB is removed → User is logged off immediately.
-
-🧪 How the Script Works (Code Overview)
+📄 Core Script Example
 import os
 import time
 
-TARGET_SERIAL = "037D13C130C0"
+TARGET_SERIAL = "037D13C130C0"  # Your USB serial
 
 while True:
     time.sleep(10)
     os.system("wmic diskdrive get serialnumber > usblist.txt")
 
     try:
-        with open("usblist.txt", "r", encoding="utf-16le") as readfile:
-            content = readfile.read()
+        with open("usblist.txt", "r", encoding="utf-16le") as f:
+            content = f.read()
 
         os.remove("usblist.txt")
 
         if TARGET_SERIAL not in content:
             os.system("shutdown -l")
             break
-    except Exception as e:
-        print(f"Error: {e}")
+
+    except Exception:
         time.sleep(10)
 
-🧩 How to Run at System Startup (Optional)
-Option A: Task Scheduler (recommended)
+🧪 How to Get Your USB Serial Number
 
-Open Task Scheduler
+Run this in Command Prompt:
 
-Create New Task
+wmic diskdrive get serialnumber
 
-Trigger: At logon
 
-Action: Start program
+Pick the serial ID of your USB → put into TARGET_SERIAL.
 
-Program: python.exe
+💻 Example Output (WMIC)
+SerialNumber
+037D13C130C0
+WD-WX52A1234567
 
-Arguments: C:\path\usb_auth.py
+🔐 Auto-Start on Windows (Optional)
+Option 1 — Task Scheduler
 
-Enable Run with highest privileges
+✔️ Best method
+✔️ Auto-runs with admin privileges
 
-Option B: Startup Folder
+Option 2 — Startup Folder
 
-Place a shortcut here:
+Quick but less secure.
 
-C:\Users\<Username>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup
 
-⚠️ Limitations
 
-Works only on Windows (WMIC-based)
+Place a shortcut to the script here.
 
-WMIC is deprecated in latest Win11 builds (switch to PowerShell in future)
+🔒 .gitignore (Important!)
+usblist.txt
+*.log
+*.exe
+__pycache__/
 
-Serial numbers can technically be spoofed (not trivial)
 
-No warning before logoff — it’s immediate
+🙅 Never upload your USB serial to GitHub if it's a sensitive environment.
 
-No encryption or multi-device support in base version
+📊 Command Summary
+🔧 Command	💡 What It Does
+wmic diskdrive get serialnumber	Fetch USB serial number
+shutdown -l	Logs off user
+python usb_auth.py	Runs script
+taskschd.msc	Opens Task Scheduler
+🚀 GitHub Upload
+git init
+git add .
+git commit -m "USB authentication system"
+git branch -M main
+git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO.git
+git push -u origin main
 
-🚀 Future Enhancements
+🧠 Pro Tips
 
-PowerShell-based USB detection (modern Windows)
+Keep your USB physically safe — it is the key.
 
-Support multiple authorized USBs
+Use a known, reliable, no-loose-port USB drive.
 
-Encrypted config file
+Convert script to EXE for better security using PyInstaller.
 
-GUI interface for configuration
+Use Task Scheduler to prevent users from bypassing the script.
 
-Pop-up warning before forced logoff
+📚 Helpful Links
 
-📄 License
-
-Open-source. Do whatever you want with it.
+📘 Python Docs
+🌐 WMIC Reference
+🔐 Windows Security Commands
