@@ -1,203 +1,193 @@
-<p align="center">
-  <img src="https://i.imgur.com/xj0pSxA.png" width="100%" />
-</p>
+# USB Drive Authentication System
 
-<h1 align="center">🔐 USB DRIVE AUTHENTICATION SYSTEM</h1>
-<h3 align="center">Turn Your USB Pen-Drive Into a Physical Security Key 🔑💻🛡️</h3>
+A lightweight Python-based security system that uses USB drive serial number verification to control user access on Windows computers.
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Python-3.x-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Windows-10/11-lightgrey?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Security-High-green?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Automation-Active-blue?style=for-the-badge" />
-</p>
+## 📋 Overview
 
----
+This project implements a hardware-based authentication mechanism that continuously monitors for the presence of a specific USB device. If the authorized USB drive is removed or not detected, the system automatically logs off the user, preventing unauthorized access.
 
-## 🚀 Overview  
-This project converts your **USB flash drive** into a **hardware authentication key**.
+## ✨ Features
 
-- 🟢 USB inserted → System stays unlocked  
-- 🔴 USB removed → ⚠️ Instantly logs off Windows  
+- **Physical Authentication**: Uses unique USB serial numbers as hardware keys
+- **Automatic Monitoring**: Continuously checks USB presence every 10 seconds
+- **Instant Response**: Triggers immediate logoff when authorized USB is removed
+- **Lightweight**: Minimal system resource consumption
+- **No Additional Hardware**: Works with any standard USB drive
+- **Simple Setup**: Easy configuration and deployment
 
-💡 Works exactly like a **car key**:  
-Remove the key → engine stops.  
-Remove USB → system locks. 🚗💨  
+## 🔧 System Requirements
 
----
+| Component | Requirement |
+|-----------|-------------|
+| Operating System | Windows 10/11 (64-bit) |
+| Python Version | 3.8 or higher |
+| Privileges | Administrator rights required |
+| USB Device | Any standard USB 2.0/3.0 drive |
+| Storage | At least 100 MB free disk space |
 
-## 🌟 Why This Is Useful  
-- ✔ Prevent unauthorized access  
-- ✔ Perfect for office, hostel, shared PCs  
-- ✔ Lightweight & fast  
-- ✔ No external software needed  
-- ✔ Runs silently in background  
-- ✔ Uses unspoofable **USB hardware serial**  
-- ✔ AMAZING interview project (security + OS + automation + Python)
+## 🚀 Installation
 
-> 🔐 Passwords can leak.  
-> Hardware serials are MUCH harder to fake.
+1. **Clone the repository**
+```bash
+git clone https://github.com/yourusername/usb-drive-authentication.git
+cd usb-drive-authentication
+```
 
----
+2. **Install Python** (if not already installed)
+   - Download from [python.org](https://www.python.org)
+   - Ensure "Add Python to PATH" is checked during installation
 
-## 🧠 How It Works (High-Level)
-
-### 🔌 1️⃣ USB Serial Extraction  
-Using WMIC:  
+3. **Verify WMIC availability** (built-in on Windows)
+```cmd
 wmic diskdrive get serialnumber
+```
 
-### 🧠 2️⃣ Python Script Monitors USB  
-Every few seconds script checks:
+## 📝 Configuration
 
-- If serial exists → 🟢 continue  
-- If not → 🔴 log off  
+1. **Find your USB serial number**
+```cmd
+wmic diskdrive get serialnumber
+```
 
-### ⚡ 3️⃣ Auto Security  
-No human interaction needed → full automation.
+2. **Edit the script**
+Open `usb_auth.py` and update the `TARGET_SERIAL` variable:
+```python
+TARGET_SERIAL = "YOUR_USB_SERIAL_NUMBER"
+```
 
----
+## 🎯 Usage
 
-## 🧩 Core Concepts (Quick Revision)
+### Basic Usage
+Run the script with administrator privileges:
+```cmd
+python usb_auth.py
+```
 
-| 🔢 Concept       | 🧠 Meaning                                                   |
-|------------------|-------------------------------------------------------------|
-| 🔌 USB Serial    | Unique hardware ID for your pen-drive                       |
-| 🧠 Python Script | Monitors system continuously                                 |
-| 📝 WMIC          | Windows tool to fetch hardware info                          |
-| 🗂 Temp File     | Stores WMIC output temporarily                               |
-| 🔁 Loop          | Checks USB presence every few seconds                        |
-| ⚡ Auto Logoff   | Logs off instantly when USB is removed                       |
+### Auto-start on System Boot
 
----
+**Method 1: Task Scheduler**
+1. Open Task Scheduler (`Win + R` → `taskschd.msc`)
+2. Create a new task
+3. Set trigger to "At log on"
+4. Set action to start `usb_auth.py`
+5. Enable "Run with highest privileges"
 
-## 📁 Project Structure
+**Method 2: Startup Folder**
+Place a shortcut in:
+```
+C:\Users\<YourUsername>\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+```
 
-USB-drive-authentication/
-├── USB.py # Main authentication script
-├── README.md # Documentation
-└── .gitignore # Ignore temporary files
-
-
----
-
-## 🧾 Main Script (USB.py)
-
+## 💻 Code Example
 ```python
 import os
 import time
 
-# Set your authorized USB serial number
-TARGET_SERIAL = "YOUR_SERIAL_HERE"
+TARGET_SERIAL = "037D13C2140"
 
 while True:
-    # Wait for 10 seconds before each check
     time.sleep(10)
-
-    # Get serial numbers of connected USB disks
     os.system("wmic diskdrive get serialnumber > usblist.txt")
-
+    
     try:
-        # Read WMIC output
         with open("usblist.txt", "r", encoding="utf-16le") as file:
             content = file.read()
-
         os.remove("usblist.txt")
-
-        # If authorized USB is not found → log off
+        
         if TARGET_SERIAL not in content:
             os.system("shutdown -l")
             break
-
-    except Exception:
+    except Exception as e:
+        print(f"Error: {e}")
         time.sleep(10)
+```
 
-🔍 How to Get Your USB Serial Number
-Run this command in CMD:
+## 🎓 Use Cases
 
-arduino
-Copy code
-wmic diskdrive get serialnumber
-Example Output:
+- **Personal Computers**: Protect sensitive data with physical authentication
+- **Office Environments**: Ensure only authorized personnel access workstations
+- **Educational Institutions**: Control USB usage in computer labs
+- **Public Terminals**: Prevent unauthorized access in shared spaces
+- **Parental Control**: Monitor and restrict system access
 
-nginx
-Copy code
-SerialNumber
-037D13C1ABC0
-59A8F903XYZ1
-Replace in script:
+## ⚙️ How It Works
 
-python
-Copy code
-TARGET_SERIAL = "037D13C1ABC0"
+1. **Detection**: Script queries Windows for connected USB devices using WMIC
+2. **Verification**: Compares detected serial numbers against authorized serial
+3. **Action**: If match found, continues monitoring; if not, triggers user logoff
+4. **Loop**: Repeats check every 10 seconds
 
-⚙️ Setup & Run
-1️⃣ Requirements
+## 🔒 Security Features
 
-🪟 Windows 10/11
+- Hardware-based physical authentication
+- Unique device identification via serial numbers
+- Automatic session termination on unauthorized access
+- No password dependency
+- Temporary file cleanup for data security
 
-🐍 Python 3.x
+## ⚠️ Limitations
 
-Any USB flash drive
+- Windows-only (WMIC dependency)
+- Single authorized device in current version
+- Vulnerable to advanced serial number spoofing
+- No data encryption (access control only)
+- Requires manual setup
+- No pre-logoff warnings
 
-2️⃣ Clone the Repo
-git clone https://github.com/Yogesh0311/USB-drive-autintication-.git
-cd USB-drive-autintication-
+## 🛠️ Troubleshooting
 
-3️⃣ Configure Serial
+**Script doesn't trigger logoff**
+- Ensure running with administrator privileges
+- Verify WMIC is available on your system
 
-Update inside USB.py:
+**USB not detected**
+- Check USB connection and mounting
+- Wait 10-15 seconds for detection cycle
 
-TARGET_SERIAL = "YOUR_SERIAL"
+**Permission errors**
+- Right-click → "Run as Administrator"
 
-4️⃣ Run Script
-python USB.py
+## 🚧 Future Enhancements
 
+- [ ] Multi-device whitelist support
+- [ ] Cross-platform compatibility (Linux/macOS)
+- [ ] GUI interface for easier configuration
+- [ ] Encryption integration
+- [ ] Pre-logoff warning notifications
+- [ ] Cloud-based device management
+- [ ] Activity logging and audit trails
 
-🟢 Keep USB inserted
-🔴 Remove USB → instant logoff
+## 📚 Documentation
 
-🚀 Auto-Run on Windows Startup
-✔ Method 1 (Recommended) – Task Scheduler
+For detailed documentation, see:
+- [User Manual](docs/USER_MANUAL.md)
+- [Developer Guide](docs/DEVELOPER_GUIDE.md)
+- [API Reference](docs/API_REFERENCE.md)
 
-Open:
+## 🤝 Contributing
 
-taskschd.msc
+Contributions are welcome! Please feel free to submit a Pull Request.
 
+## 📄 License
 
-Create task:
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Trigger → At log on
+## 👥 Authors
 
-Action → Start program (python USB.py)
-
-Run with highest privileges → ✔
-
-Save
-
-✔ Method 2 – Startup Folder
-
-Paste shortcut here:
-
-%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup
-
-🔒 .gitignore (Important)
-usblist.txt
-*.log
-__pycache__/
-*.pyc
-*.exe
+- **Yogesh** -  BTECh Final Year Project
 
 
-⚠️ Never push your real USB Serial to GitHub!
 
-📊 Useful Commands
-| Command                           | Purpose             |
-| --------------------------------- | ------------------- |
-| `wmic diskdrive get serialnumber` | Get USB serial      |
-| `python USB.py`                   | Run script          |
-| `shutdown -l`                     | Log off user        |
-| `taskschd.msc`                    | Open Task Scheduler |
-| `git status`                      | Check changes       |
-| `git add .`                       | Stage all changes   |
-| `git commit -m "message"`         | Commit changes      |
-| `git push origin main`            | Push to GitHub      |
+## 📧 Contact
+
+For questions or support, please open an issue in the GitHub repository.
+
+
+
+## ⚖️ Disclaimer
+
+This software is provided for educational and research purposes. Users are responsible for ensuring compliance with organizational policies and local regulations regarding system security and access control.
+
+---
+
+**Note**: Always maintain a backup method of system access in case of USB device failure or loss.
